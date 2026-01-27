@@ -1,23 +1,25 @@
 {
   "name": "homelist-api",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc",
+    "start": "node dist/server.js",
+    "prod": "npm run build && npm start"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon src/server.ts --watch 'src/' -e ts",
-    "compile": "npx tsc",
-    "start": "node .dist/server.js"
-  },
+  "description": "",
   "dependencies": {
-    "dotenv": "^17.2.3",
     "express": "^5.2.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.0.9",
+    "@types/node": "^25.0.10",
+    "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }

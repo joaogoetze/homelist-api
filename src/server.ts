@@ -1,8 +1,7 @@
-import { app } from './app';
-import { env } from './config/env';
+import { app } from "./app"
 
-const port = env.port;
+const PORT = 3000;
 
-app.listen(port, () => {
-    console.info(`Server running on port ${port}`)
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

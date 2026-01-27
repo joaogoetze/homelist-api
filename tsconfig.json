@@ -1,20 +1,29 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "module": "commonjs",
-    "rootDir": "./src/",
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "outDir": "./dist/",
-
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "module": "nodenext",
+    "target": "ES2020",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ES2020"
+    ],
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
     "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-
-    "types": ["node"]
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true,
   },
-  "ts-node": {
-    "transpileOnly": true
-  }
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
