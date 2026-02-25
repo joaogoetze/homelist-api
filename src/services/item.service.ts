@@ -1,0 +1,9 @@
+import { ItemRepository } from '../repositories/item.repository';
+
+export class ItemService {
+    private itemRepository = new ItemRepository();
+
+    async list() {
+        return this.itemRepository.findAll();
+    }
+}
