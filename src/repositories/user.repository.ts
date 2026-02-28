@@ -1,5 +1,5 @@
-import "dotenv/config";
-import { pool } from "../database";
+import 'dotenv/config';
+import { pool } from '../database';
 
 export class UserRepository {
     async findAll() {
