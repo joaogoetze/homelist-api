@@ -5,6 +5,6 @@ import { itemRoutes } from './item.routes';
 
 export const routes = Router();
 
-routes.use(userRoutes);
-routes.use(listRoutes);
-routes.use(itemRoutes);
+routes.use("/users", userRoutes);
+routes.use("/lists", listRoutes);
+routes.use("/items", itemRoutes);
