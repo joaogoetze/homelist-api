@@ -8,6 +8,10 @@ export class ItemService {
     }
 
     async getItemsByListId(listId: number) {
-        return this.itemRepository.getItemsByListId(listId)
+        return this.itemRepository.getItemsByListId(listId);
+    }
+
+    async createItem(listId: number, name: string) {
+        return this.itemRepository.createItem(listId, name);
     }
 }

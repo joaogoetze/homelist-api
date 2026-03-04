@@ -18,4 +18,13 @@ export class ItemRepository {
 
         return rows;
     }
+
+    async createItem(listId: number, name: string) {
+        const { rows } = await pool.query(
+            "INSERT INTO items (list_id, name) VALUES ($1, $2) RETURNING *",
+            [listId, name]
+        );
+
+        return rows;
+    }
 }

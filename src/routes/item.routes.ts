@@ -5,4 +5,5 @@ export const itemRoutes = Router();
 
 const itemController = new ItemController();
 
-itemRoutes.get("/items", itemController.list);
+itemRoutes.get("/", itemController.list);
+itemRoutes.post("/", itemController.createItem);
