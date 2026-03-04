@@ -14,4 +14,8 @@ export class ItemService {
     async createItem(listId: number, name: string) {
         return this.itemRepository.createItem(listId, name);
     }
+
+    async updateCheckItem(itemId: number, checked: boolean) {
+        return this.itemRepository.updateCheckItem(itemId, checked);
+    }
 }

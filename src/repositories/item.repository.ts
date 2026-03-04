@@ -27,4 +27,14 @@ export class ItemRepository {
 
         return rows;
     }
+
+    async updateCheckItem(itemId: number, checked: boolean) {
+        console.log(itemId, checked)
+        const { rows } = await pool.query(
+            "UPDATE items SET checked = $1 WHERE id = $2 RETURNING *",
+            [checked, itemId]
+        );
+
+        return rows;
+    }
 }

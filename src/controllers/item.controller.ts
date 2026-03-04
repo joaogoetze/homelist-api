@@ -24,6 +24,17 @@ export class ItemController {
             name
         );
 
-        return res.status(201).json(item)
+        return res.status(201).json(item);
+    }
+
+    updateCheckItem = async (req: Request, res: Response) => {
+        const { itemId, checked} = req.body;
+
+        const item = await this.itemService.updateCheckItem(
+            itemId,
+            checked
+        );
+
+        return res.status(200).json(item);
     }
 }
