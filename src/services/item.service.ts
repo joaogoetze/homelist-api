@@ -3,10 +3,6 @@ import { ItemRepository } from '../repositories/item.repository';
 export class ItemService {
     private itemRepository = new ItemRepository();
 
-    async list() {
-        return this.itemRepository.list();
-    }
-
     async getItemsByListId(listId: number) {
         return this.itemRepository.getItemsByListId(listId);
     }
@@ -17,5 +13,13 @@ export class ItemService {
 
     async updateCheckItem(itemId: number, checked: boolean) {
         return this.itemRepository.updateCheckItem(itemId, checked);
+    }
+
+    async updateNameItem(itemId: number, name: string) {
+        return this.itemRepository.updateNameItem(itemId, name);
+    }
+
+    async deleteItem(itemId: number) {
+        return this.itemRepository.deleteItem(itemId);
     }
 }
