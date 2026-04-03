@@ -13,7 +13,7 @@ export class AuthRepository {
 
     async insertTokens(userId: number, refreshToken: string) {
         const { rows } = await pool.query(
-            "INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, NOW() + interval '30 days') RETURNING *",
+            "INSERT INTO refresh_tokens (user_id, refresh_token, expires_at) VALUES ($1, $2, NOW() + interval '30 days') RETURNING *",
             [userId, refreshToken]
         );
 
@@ -31,10 +31,10 @@ export class AuthRepository {
 
     async getToken(refreshToken: string) {
         const { rows } = await pool.query(
-            "SELECT * FROM refresh_tokens WHERE token = $1",
+            "SELECT * FROM refresh_tokens WHERE refresh_token = $1",
             [refreshToken]
         );
-
+        
         return rows[0];
     }
 }

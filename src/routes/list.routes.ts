@@ -11,4 +11,5 @@ const itemController = new ItemController();
 listRoutes.get("/", authMiddleware, listController.getListsByOwnerId);
 listRoutes.get("/:listId/items", authMiddleware, itemController.getItemsByListId);
 listRoutes.post("/", authMiddleware, listController.createList);
+listRoutes.put("/", authMiddleware, listController.updateList);
 listRoutes.delete("/", authMiddleware, listController.deleteList);

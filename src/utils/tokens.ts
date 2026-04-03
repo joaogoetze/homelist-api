@@ -7,7 +7,7 @@ export function generateAcessToken(userId: number) {
     return jwt.sign(
         {userId },
         ACCESS_SECRET,
-        { expiresIn: "15m" }
+        { expiresIn: "20s" }
     );
 }
 
@@ -15,6 +15,6 @@ export function generateRefreshToken(userId: number) {
     return jwt.sign(
         { userId },
         REFRESH_SECRET,
-        { expiresIn: "30d" }
+        { expiresIn: "1m" }
     );
 }

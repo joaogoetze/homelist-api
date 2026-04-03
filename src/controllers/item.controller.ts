@@ -52,7 +52,7 @@ export class ItemController {
     updateCheckItem = async (req: Request, res: Response) => {
         const { itemId, checked } = req.body;
 
-        if (!itemId || !checked) {
+        if (!itemId || typeof checked !== "boolean") {
             return res.status(400).json({
                 error: "item id and checked are required"
             });

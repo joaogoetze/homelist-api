@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import { AppError } from '../errors/app.error';
 
 export class AuthController {
     private authService = new AuthService();
@@ -24,14 +25,27 @@ export class AuthController {
 
         if (!email || !password) {
             return res.status(400).json({
-                error: "invalid data"
+                error: "email and password are required"
             });
         }
 
-        const { accessToken, refreshToken } = await this.authService.login(email, password);
-        return res.status(200).json({
-            accessToken, refreshToken
-        });
+        try {
+            const { accessToken, refreshToken } = await this.authService.login(email, password);
+            return res.status(201).json({
+                accessToken, refreshToken
+            });
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    error: error.message
+                });
+            }
+            console.error("Login error:", error);
+
+            return res.status(500).json({
+                error: "internal server error"
+            });
+        }
     }
 
     refresh = async(req: Request, res: Response) => {

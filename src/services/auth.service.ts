@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { AuthRepository } from '../repositories/auth.repository';
 import { generateAcessToken, generateRefreshToken } from '../utils/tokens';
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { AppError } from '../errors/app.error';
 
 export class AuthService {
     private authRepository = new AuthRepository();
@@ -24,17 +25,14 @@ export class AuthService {
     async login(email: string, password: string) {
         const user = await this.authRepository.getUserByEmail(email);
 
-        if (!user) throw new Error("Invalid credentials");
+        if (!user) throw new AppError("Invalid credentials", 401);
 
         const validPassword = await bcrypt.compare(
             password,
             user.hashed_password
         )
         
-
-        if (!validPassword) {
-            throw new Error("Invalid credentials");
-        }
+        if (!validPassword) throw new Error("Invalid credentials, invalid password");
 
         const accessToken = generateAcessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
@@ -47,16 +45,16 @@ export class AuthService {
     async refresh(refreshToken: string) {
         const stored = await this.authRepository.getToken(refreshToken);
 
-        if (!stored.rows.length) {
+        if (!stored) {
             throw new Error("Invalid tokens");
         }
 
         const payload = jwt.verify(
-    refreshToken,
-    process.env.JWT_REFRESH_SECRET!
-) as JwtPayload;
+            refreshToken,
+            process.env.JWT_REFRESH_SECRET!
+        ) as JwtPayload;
 
-const accessToken = generateAcessToken(payload.userId);
+        const accessToken = generateAcessToken(payload.userId);
 
         return accessToken;
     }

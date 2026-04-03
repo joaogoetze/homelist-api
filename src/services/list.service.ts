@@ -11,6 +11,10 @@ export class ListService {
         return this.listRepository.createList(ownerId, name);
     }
 
+    async updateList(listId: number, name: string) {
+        return this.listRepository.updateList(listId, name);
+    }
+
     async deleteList(listId: number) {
         return this.listRepository.deleteList(listId);
     }

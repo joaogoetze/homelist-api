@@ -4,7 +4,7 @@ import { pool } from '../database';
 export class ListRepository {
     async getListByOwnerId(userId: number) {
         const { rows } = await pool.query(
-            "SELECT id, name FROM lists WHERE owner_id = $1",
+            "SELECT id, name FROM lists WHERE owner_id = $1 AND deleted_at IS NULL",
             [userId]
         );
 
@@ -20,6 +20,15 @@ export class ListRepository {
         return rows;
     }
 
+    async updateList(listId: number, name: string) {
+        const { rows } = await pool.query(
+            "UPDATE lists SET name = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING *",
+            [name, listId]
+        );
+        
+        return rows;
+    }
+    
     async deleteList(listId: number) {
         const { rows } = await pool.query(
             "UPDATE lists SET deleted_at = now() WHERE id = $1 RETURNING *",

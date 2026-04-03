@@ -6,8 +6,7 @@ export class ListController {
     private listService = new ListService();
 
     getListsByOwnerId = async (req: AuthRequest, res: Response) => {
-        const userId = Number(req.params.userId);
-
+        const userId = Number(req.userId);
         if (Number.isNaN(userId)) {
             return res.status(400).json({
                 error: "invalid user id"
@@ -24,11 +23,10 @@ export class ListController {
                 error: "internal server error"
             });
         }
-        
     }
 
     createList = async (req: AuthRequest, res: Response) => {
-        const userId = Number(req.params.userId);
+        const userId = Number(req.userId);
         const { name } = req.body;
 
         if (Number.isNaN(userId)) {
@@ -54,6 +52,35 @@ export class ListController {
             });
         }
     }
+
+    updateList = async (req: AuthRequest, res: Response) => {
+        const userId = Number(req.userId);
+        const { listId, name } = req.body;
+
+        if (Number.isNaN(userId)) {
+            return res.status(400).json({
+                error: "invalid user id"
+            });
+        }
+
+        if (!listId || Number.isNaN(listId) || !name) {
+            return res.status(400).json({
+                error: "list id and name are required"
+            });
+        }
+
+        try {
+            const list = await this.listService.updateList(listId, name);
+            res.status(200).json(list);
+        } catch (error) {
+            console.error("Error updating list: ", error);
+
+            return res.status(500).json({
+                error: "internal server error"
+            });
+        }
+    }
+
 
     deleteList = async (req: Request, res: Response) => {
         const { listId } = req.body;

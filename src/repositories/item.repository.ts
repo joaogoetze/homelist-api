@@ -5,7 +5,7 @@ export class ItemRepository {
 
     async getItemsByListId(listId: number) {
         const { rows } = await pool.query(
-            "SELECT id, list_id, name, checked FROM items WHERE status = 1 AND list_id = $1 ORDER BY id ASC",
+            "SELECT id, list_id, name, checked FROM items WHERE list_id = $1 ORDER BY id ASC",
             [listId]
         );
 
