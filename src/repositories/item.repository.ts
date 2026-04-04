@@ -5,7 +5,7 @@ export class ItemRepository {
 
     async getItemsByListId(listId: number) {
         const { rows } = await pool.query(
-            "SELECT id, list_id, name, checked FROM items WHERE list_id = $1 ORDER BY id ASC",
+            "SELECT id, list_id, name, checked FROM items WHERE list_id = $1 and deleted_at is null ORDER BY id ASC",
             [listId]
         );
 
@@ -18,25 +18,25 @@ export class ItemRepository {
             [listId, name]
         );
 
-        return rows;
+        return rows[0];
     }
 
-    async updateCheckItem(itemId: number, checked: boolean) {
+    async updateItemCheck(itemId: number, checked: boolean) {
         const { rows } = await pool.query(
             "UPDATE items SET checked = $1 WHERE id = $2 RETURNING *",
             [checked, itemId]
         );
 
-        return rows;
+        return rows[0];
     }
 
-    async updateNameItem(itemId: number, name: string) {
+    async updateItemName(itemId: number, name: string) {
         const { rows } = await pool.query(
             "UPDATE items SET name = $1 WHERE id = $2 RETURNING *",
             [name, itemId]
         );
 
-        return rows;
+        return rows[0];
     }
 
     async deleteItem(itemId: number) {
@@ -45,6 +45,6 @@ export class ItemRepository {
             [itemId]
         );
 
-        return rows;
+        return rows[0];
     }
 }

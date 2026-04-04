@@ -7,6 +7,6 @@ export const itemRoutes = Router();
 const itemController = new ItemController();
 
 itemRoutes.post("/", authMiddleware, itemController.createItem);
-itemRoutes.put("/", authMiddleware, itemController.updateCheckItem);
-itemRoutes.put("/name", authMiddleware, itemController.updateNameItem);
-itemRoutes.delete("/", authMiddleware, itemController.deleteItem);
+itemRoutes.put("/:itemId/check", authMiddleware, itemController.updateItemCheck);
+itemRoutes.put("/:itemId/name", authMiddleware, itemController.updateItemName);
+itemRoutes.delete("/:itemId", authMiddleware, itemController.deleteItem);

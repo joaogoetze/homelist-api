@@ -11,5 +11,6 @@ const itemController = new ItemController();
 listRoutes.get("/", authMiddleware, listController.getListsByOwnerId);
 listRoutes.get("/:listId/items", authMiddleware, itemController.getItemsByListId);
 listRoutes.post("/", authMiddleware, listController.createList);
-listRoutes.put("/", authMiddleware, listController.updateList);
-listRoutes.delete("/", authMiddleware, listController.deleteList);
+listRoutes.post("/:listId/users", authMiddleware, listController.addListUser);
+listRoutes.put("/:listId/name", authMiddleware, listController.updateListName);
+listRoutes.delete("/:listId", authMiddleware, listController.deleteList);

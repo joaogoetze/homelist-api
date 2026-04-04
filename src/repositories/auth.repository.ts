@@ -11,7 +11,7 @@ export class AuthRepository {
         return rows[0];
     }
 
-    async insertTokens(userId: number, refreshToken: string) {
+    async  insertTokens(userId: number, refreshToken: string) {
         const { rows } = await pool.query(
             "INSERT INTO refresh_tokens (user_id, refresh_token, expires_at) VALUES ($1, $2, NOW() + interval '30 days') RETURNING *",
             [userId, refreshToken]
@@ -31,7 +31,7 @@ export class AuthRepository {
 
     async getToken(refreshToken: string) {
         const { rows } = await pool.query(
-            "SELECT * FROM refresh_tokens WHERE refresh_token = $1",
+            "SELECT * FROM refresh_tokens WHERE refresh_token = $1 AND expires_at > NOW()",
             [refreshToken]
         );
         

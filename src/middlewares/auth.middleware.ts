@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import { Request, Response, NextFunction } from 'express';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
+import { AppError } from '../errors/app.error';
 
 export interface AuthRequest extends Request {
   userId?: number;
@@ -12,7 +13,7 @@ export function authMiddleware(
 ) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    return res.status(401).json({ error: "Token não fornecido" });
+    return next(new AppError('authorization header is required', 401));
   }
 
   const token = authHeader.split(" ")[1];
@@ -27,9 +28,9 @@ export function authMiddleware(
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
-      return res.status(401).json({ error: "Token expirado" });
+      return next(new AppError('expired token', 401));
     }
 
-    return res.status(401).json({ error: "Token inválido" });
-}
+    return next(new AppError('invalid token', 401));
+  }
 }

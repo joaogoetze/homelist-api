@@ -1,25 +1,36 @@
+import { AppError } from '../errors/app.error';
 import { ItemRepository } from '../repositories/item.repository';
 
 export class ItemService {
     private itemRepository = new ItemRepository();
 
     async getItemsByListId(listId: number) {
-        return this.itemRepository.getItemsByListId(listId);
+        const items = await this.itemRepository.getItemsByListId(listId);
+        if (!items) throw new AppError('items not found', 404);
+        return items;
     }
 
     async createItem(listId: number, name: string) {
-        return this.itemRepository.createItem(listId, name);
+        const item = await this.itemRepository.createItem(listId, name);
+        if (!item) throw new AppError('error creating item', 500);
+        return item;
     }
 
-    async updateCheckItem(itemId: number, checked: boolean) {
-        return this.itemRepository.updateCheckItem(itemId, checked);
+    async updateItemCheck(itemId: number, checked: boolean) {
+        const item = await this.itemRepository.updateItemCheck(itemId, checked);
+        if (!item) throw new AppError('error updating item', 500);
+        return item;
     }
 
-    async updateNameItem(itemId: number, name: string) {
-        return this.itemRepository.updateNameItem(itemId, name);
+    async updateItemName(itemId: number, name: string) {
+        const item = await this.itemRepository.updateItemName(itemId, name);
+        if (!item) throw new AppError('error updating item', 500);
+        return item;
     }
 
     async deleteItem(itemId: number) {
-        return this.itemRepository.deleteItem(itemId);
+        const item = await this.itemRepository.deleteItem(itemId);
+        if (!item) throw new AppError('error deleting item', 500);
+        return item;
     }
 }

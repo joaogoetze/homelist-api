@@ -9,55 +9,32 @@ export class AuthController {
         const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            return res.status(400).json({
-                error: "name, email and password are required"
-            });
+            throw new AppError('name, email and password are required', 400);
         }
 
         const { accessToken, refreshToken } = await this.authService.register(name, email, password);
-        return res.status(201).json({
-            accessToken, refreshToken
-        });
+        return res.status(201).json({ accessToken, refreshToken });
     }
 
     login = async(req: Request, res: Response) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({
-                error: "email and password are required"
-            });
+            throw new AppError('email and password are required', 400);
         }
 
-        try {
-            const { accessToken, refreshToken } = await this.authService.login(email, password);
-            return res.status(201).json({
-                accessToken, refreshToken
-            });
-        } catch (error: any) {
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    error: error.message
-                });
-            }
-            console.error("Login error:", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        const { accessToken, refreshToken } = await this.authService.login(email, password);
+        return res.status(200).json({ accessToken, refreshToken });
     }
 
     refresh = async(req: Request, res: Response) => {
         const { refreshToken } = req.body;
 
         if (!refreshToken) {
-            return res.status(400).json({
-                error: "refresh token is required"
-            });
+            throw new AppError('invalid tokens', 401);
         }
 
         const accessToken = await this.authService.refresh(refreshToken);
-        return res.json({ accessToken });
+        return res.status(200).json({ accessToken });
     }
 }

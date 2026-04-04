@@ -1,28 +1,20 @@
 import { Request, Response } from 'express';
 import { ListService } from '../services/list.service';
-import { AuthRequest } from "../middlewares/auth.middleware";
+import { AuthRequest } from '../middlewares/auth.middleware';
+import { AppError } from '../errors/app.error';
 
 export class ListController {
     private listService = new ListService();
 
     getListsByOwnerId = async (req: AuthRequest, res: Response) => {
         const userId = Number(req.userId);
+        
         if (Number.isNaN(userId)) {
-            return res.status(400).json({
-                error: "invalid user id"
-            });
+            throw new AppError('invalid user id', 400);
         }
 
-        try {
-            const lists = await this.listService.getListByOwnerId(userId);
-            res.status(200).json(lists);
-        } catch (error) {
-            console.error("Error getting lists: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        const lists = await this.listService.getListByOwnerId(userId);
+        res.status(200).json(lists);
     }
 
     createList = async (req: AuthRequest, res: Response) => {
@@ -30,76 +22,55 @@ export class ListController {
         const { name } = req.body;
 
         if (Number.isNaN(userId)) {
-            return res.status(400).json({
-                error: "invalid user id"
-            });
+            throw new AppError('invalid user id', 400);
         }
 
         if (!name) {
-            return res.status(400).json({
-                error: "name is required"
-            })
+            throw new AppError('name is required', 400);
         }
 
-        try {
-            const list = await this.listService.createList(userId, name);
-            res.status(200).json(list);
-        } catch (error) {
-            console.error("Error creating list: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        const list = await this.listService.createList(userId, name);
+        res.status(201).json(list);
     }
 
-    updateList = async (req: AuthRequest, res: Response) => {
+    addListUser = async (req: Request, res: Response) => {
+        const listId = Number(req.params.listId);
+        const { email } = req.body;
+
+        if (!listId || Number.isNaN(listId) || !email) {
+            throw new AppError('list id and email are required', 400);
+        }
+        
+        const list = await this.listService.addListUser(listId, email);
+        return res.status(200).json(list);
+    }
+
+    updateListName = async (req: AuthRequest, res: Response) => {
         const userId = Number(req.userId);
-        const { listId, name } = req.body;
+        const listId = Number(req.params.listId);
+        const { name } = req.body;
 
         if (Number.isNaN(userId)) {
-            return res.status(400).json({
-                error: "invalid user id"
-            });
+            throw new AppError('invalid user id', 400);
         }
 
         if (!listId || Number.isNaN(listId) || !name) {
-            return res.status(400).json({
-                error: "list id and name are required"
-            });
+            throw new AppError('list id and name are required', 400);
         }
 
-        try {
-            const list = await this.listService.updateList(listId, name);
-            res.status(200).json(list);
-        } catch (error) {
-            console.error("Error updating list: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        const list = await this.listService.updateListName(listId, name);
+        res.status(200).json(list);
     }
 
 
     deleteList = async (req: Request, res: Response) => {
-        const { listId } = req.body;
+        const listId = Number(req.params.listId);
 
         if (!listId || Number.isNaN(listId)) {
-            return res.status(400).json({
-                error: "list id is required"
-            });
+            throw new AppError('list id is required', 400);
         }
 
-        try {
-            const list = await this.listService.deleteList(listId);
-            return res.status(200).json(list);
-        } catch (error) {
-            console.error("Error deleting list: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        const list = await this.listService.deleteList(listId);
+        return res.status(200).json(list);
     }
 }

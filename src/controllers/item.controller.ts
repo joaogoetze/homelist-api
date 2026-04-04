@@ -1,122 +1,64 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { ItemService } from '../services/item.service';
+import { AppError } from '../errors/app.error';
 
 export class ItemController {
     private itemService = new ItemService();
 
     getItemsByListId = async (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-
+        
         if (Number.isNaN(listId)) {
-            return res.status(400).json({
-                error: "invalid list id"
-            });
+            throw new AppError('invalid list id', 400);
         }
-
-        try {
-            const items = await this.itemService.getItemsByListId(listId);
-            res.status(200).json(items);
-        } catch (error) {
-            console.error("Error getting items: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        
+        const items = await this.itemService.getItemsByListId(listId);
+        res.status(200).json(items);
     }
 
     createItem = async (req: Request, res: Response) => {
         const { listId, name } = req.body;
 
         if (!listId || Number.isNaN(listId) || !name) {
-            return res.status(400).json({
-                error: "list id and name are required"
-            });
+            throw new AppError('list id and name are required', 400);
         }
-
-        try {
-            const item = await this.itemService.createItem(
-                listId,
-                name
-            );
-            return res.status(201).json(item);
-        } catch (error) {
-            console.error("Error creating item: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        
+        const item = await this.itemService.createItem(listId, name);
+        return res.status(201).json(item);
     }
 
-    updateCheckItem = async (req: Request, res: Response) => {
-        const { itemId, checked } = req.body;
+    updateItemCheck = async (req: Request, res: Response) => {
+        const itemId = Number(req.params.itemId);
+        const { checked } = req.body;
 
         if (!itemId || typeof checked !== "boolean") {
-            return res.status(400).json({
-                error: "item id and checked are required"
-            });
+            throw new AppError('item id and checked are required', 400);
         }
 
-        try {
-            const item = await this.itemService.updateCheckItem(
-                itemId,
-                checked
-            );
-            return res.status(200).json(item);
-        } catch (error) {
-            console.error("Error updating checked from item: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
+        const item = await this.itemService.updateItemCheck(itemId, checked);
+        return res.status(200).json(item);
     }
 
-    updateNameItem = async (req: Request, res: Response) => {
-        const { itemId, name } = req.body;
+    updateItemName = async (req: Request, res: Response) => {
+        const itemId = Number(req.params.itemId);
+        const { name } = req.body;
 
         if (!itemId || !name) {
-            return res.status(400).json({
-                error: "item id and name are required"
-            });
+            throw new AppError('item id and name are required', 400);
         }
 
-        try {
-            const item = await this.itemService.updateNameItem(
-                itemId,
-                name
-            );
+        const item = await this.itemService.updateItemName(itemId, name);
         return res.status(200).json(item);
-        } catch (error) {
-            console.error("Error updating name from item: ", error);
-
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
     }
 
     deleteItem = async (req: Request, res: Response) => {
-        const { itemId } = req.body;
+        const itemId = Number(req.params.itemId);
 
         if (!itemId) {
-            return res.status(400).json({
-                error: "item id is required"
-            });
+            throw new AppError('item id is required', 400);
         }
 
-        try {
-            const item = await this.itemService.deleteItem(
-                itemId
-            );
+        const item = await this.itemService.deleteItem(itemId);
         return res.status(200).json(item);
-        } catch (error) {
-            console.error("Error updating name from item: ", error);
-            
-            return res.status(500).json({
-                error: "internal server error"
-            });
-        }
     }
 }
