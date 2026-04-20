@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ItemService } from '../services/item.service';
 import { AppError } from '../errors/app.error';
 

@@ -20,6 +20,7 @@ export class AuthController {
         const { email, password } = req.body;
 
         if (!email || !password) {
+            console.error('Missing email or password');
             throw new AppError('email and password are required', 400);
         }
 
