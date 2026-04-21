@@ -10,7 +10,8 @@ export class UserController {
         const userId = Number(req.userId);
         
         if (Number.isNaN(userId)) {
-            throw new AppError('invalid user id', 400);
+            console.error('user id invalid');
+            throw new AppError('ID do usuário inválido', 400);
         }
         
         const user = await this.userService.getMyUserInfo(userId);

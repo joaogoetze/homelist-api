@@ -9,7 +9,8 @@ export class AuthController {
         const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            throw new AppError('name, email and password are required', 400);
+            console.error('Missing name, email or password');
+            throw new AppError('Nome, email e senha são obrigatórios', 400);
         }
 
         const { accessToken, refreshToken } = await this.authService.register(name, email, password);
@@ -21,7 +22,7 @@ export class AuthController {
 
         if (!email || !password) {
             console.error('Missing email or password');
-            throw new AppError('email and password are required', 400);
+            throw new AppError('Email e senha são obrigatórios', 400);
         }
 
         const { accessToken, refreshToken } = await this.authService.login(email, password);
@@ -32,7 +33,8 @@ export class AuthController {
         const { refreshToken } = req.body;
 
         if (!refreshToken) {
-            throw new AppError('invalid tokens', 401);
+            console.error('Missing refresh token');
+            throw new AppError('Token é obrigatório', 401);
         }
 
         const accessToken = await this.authService.refresh(refreshToken);

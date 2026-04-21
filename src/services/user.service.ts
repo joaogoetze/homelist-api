@@ -6,7 +6,7 @@ export class UserService {
 
     async getMyUserInfo(userId: number) {
         const user = await this.userRepository.getMyUserInfo(userId);
-        if (!user) throw new AppError('user not found', 404);
+        if (!user) throw new AppError('Usuário não encontrado', 404);
         return user;
     }
 }

@@ -13,7 +13,8 @@ export function authMiddleware(
 ) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    return next(new AppError('authorization header is required', 401));
+    console.error('authorization header missing');
+    return next(new AppError('Token de autorização é obrigatório', 401));
   }
 
   const token = authHeader.split(" ")[1];
@@ -28,9 +29,11 @@ export function authMiddleware(
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
-      return next(new AppError('expired token', 401));
+      console.error('Token expired');
+      return next(new AppError('Token expirado', 401));
     }
 
-    return next(new AppError('invalid token', 401));
+    console.error('Invalid token');
+    return next(new AppError('Token inválido', 401));
   }
 }

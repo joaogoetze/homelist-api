@@ -10,7 +10,8 @@ export class ListController {
         const userId = Number(req.userId);
         
         if (Number.isNaN(userId)) {
-            throw new AppError('invalid user id', 400);
+            console.error('Invalid user id');
+            throw new AppError('ID do usuário inválido', 400);
         }
 
         const lists = await this.listService.getListByOwnerId(userId);
@@ -22,11 +23,13 @@ export class ListController {
         const { name } = req.body;
 
         if (Number.isNaN(userId)) {
-            throw new AppError('invalid user id', 400);
+            console.error('Invalid user id');
+            throw new AppError('ID do usuário inválido', 400);
         }
 
         if (!name) {
-            throw new AppError('name is required', 400);
+            console.error('Name is required');
+            throw new AppError('Nome é obrigatório', 400);
         }
 
         const list = await this.listService.createList(userId, name);
@@ -38,7 +41,8 @@ export class ListController {
         const { email } = req.body;
 
         if (!listId || Number.isNaN(listId) || !email) {
-            throw new AppError('list id and email are required', 400);
+            console.error('List id and email are required');
+            throw new AppError('ID da lista e email são obrigatórios', 400);
         }
         
         const list = await this.listService.addListUser(listId, email);
@@ -51,11 +55,13 @@ export class ListController {
         const { name } = req.body;
 
         if (Number.isNaN(userId)) {
-            throw new AppError('invalid user id', 400);
+            console.error('Invalid user id');
+            throw new AppError('ID do usuário inválido', 400);
         }
 
         if (!listId || Number.isNaN(listId) || !name) {
-            throw new AppError('list id and name are required', 400);
+            console.error('List id and name are required');
+            throw new AppError('ID da lista e nome são obrigatórios', 400);
         }
 
         const list = await this.listService.updateListName(listId, name);
@@ -67,7 +73,8 @@ export class ListController {
         const listId = Number(req.params.listId);
 
         if (!listId || Number.isNaN(listId)) {
-            throw new AppError('list id is required', 400);
+            console.error('List id is required');
+            throw new AppError('ID da lista é obrigatório', 400);
         }
 
         const list = await this.listService.deleteList(listId);

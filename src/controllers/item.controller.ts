@@ -9,7 +9,8 @@ export class ItemController {
         const listId = Number(req.params.listId);
         
         if (Number.isNaN(listId)) {
-            throw new AppError('invalid list id', 400);
+            console.error('Invalid list id');
+            throw new AppError('ID da lista é inválido', 400);
         }
         
         const items = await this.itemService.getItemsByListId(listId);
@@ -20,7 +21,8 @@ export class ItemController {
         const { listId, name } = req.body;
 
         if (!listId || Number.isNaN(listId) || !name) {
-            throw new AppError('list id and name are required', 400);
+            console.error('List id and name are required');
+            throw new AppError('ID da lista e nome são obrigatórios', 400);
         }
         
         const item = await this.itemService.createItem(listId, name);
@@ -32,7 +34,8 @@ export class ItemController {
         const { checked } = req.body;
 
         if (!itemId || typeof checked !== "boolean") {
-            throw new AppError('item id and checked are required', 400);
+            console.error('Item id and checked are required');
+            throw new AppError('ID do item e status de verificação são obrigatórios', 400);
         }
 
         const item = await this.itemService.updateItemCheck(itemId, checked);
@@ -44,7 +47,8 @@ export class ItemController {
         const { name } = req.body;
 
         if (!itemId || !name) {
-            throw new AppError('item id and name are required', 400);
+            console.error('Item id and name are required');
+            throw new AppError('ID do item e nome são obrigatórios', 400);
         }
 
         const item = await this.itemService.updateItemName(itemId, name);
@@ -55,7 +59,8 @@ export class ItemController {
         const itemId = Number(req.params.itemId);
 
         if (!itemId) {
-            throw new AppError('item id is required', 400);
+            console.error('Item id is required');
+            throw new AppError('ID do item é obrigatório', 400);
         }
 
         const item = await this.itemService.deleteItem(itemId);

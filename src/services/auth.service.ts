@@ -10,9 +10,8 @@ export class AuthService {
 
     async register(name: string, email: string, password: string) {
         const existingUser = await this.authRepository.getUserByEmail(email);
-        if (existingUser) {
-            throw new AppError('email already in use', 400);
-        }
+        
+        if (existingUser) throw new AppError('Email já cadastrado', 400);
         
         const hashedPassword = await bcrypt.hash(password, 10); 
         const user = await this.authRepository.register(name, email, hashedPassword);
@@ -29,15 +28,15 @@ export class AuthService {
     async login(email: string, password: string) {
         const user = await this.authRepository.getUserByEmail(email);
 
-        if (!user) throw new AppError('invalid credentials', 401);
+        if (!user) throw new AppError('Credenciais inválidas', 401);
 
         const validPassword = await bcrypt.compare(
             password,
             user.hashed_password
         )
         
-        if (!validPassword) throw new AppError('invalid credentials', 401);
-
+        if (!validPassword) throw new AppError('Credenciais inválidas', 401);
+        
         const accessToken = generateAccessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
 
@@ -49,9 +48,7 @@ export class AuthService {
     async refresh(refreshToken: string) {
         const stored = await this.authRepository.getToken(refreshToken);
 
-        if (!stored) {
-            throw new AppError('invalid tokens', 401);
-        }
+        if (!stored) throw new AppError('Token inválido', 401);
 
         const payload = jwt.verify(
             refreshToken,
