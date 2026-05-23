@@ -7,7 +7,7 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "start": "node dist/server.js",
-    "prod": "npm run build && npm start"
+    "restart": "npm run build && pm2 restart homelist-api"
   },
   "keywords": [],
   "author": "",
