@@ -7,10 +7,11 @@ export function errorMiddleware(
   res: Response,
   next: NextFunction
 ) {
+  console.error("Erro:", err);
+  
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({ error: err.message });
+    return res.status(err.statusCode).json({ message: err.message });
   }
 
-  console.error(err);
-  return res.status(500).json({ error: 'internal server error' });
+  return res.status(500).json({ message: 'internal server error' });
 }

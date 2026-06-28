@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { pool } from '../database';
 
+
 export class ListRepository {
     async getListByOwnerId(userId: number) {
         const { rows } = await pool.query(
@@ -39,8 +40,9 @@ export class ListRepository {
     }
     
     async deleteList(listId: number) {
+        
         const { rows } = await pool.query(
-            "UPDATE lists SET deleted_at = now() WHERE id = $1 RETURNING *",
+            "UPDATE lists SET deleted_at = now() WHERE id = $1 and deleted_at is null RETURNING *",
             [listId]
         );
 
@@ -54,5 +56,14 @@ export class ListRepository {
         );
 
         return rows[0];
+    }
+
+    async getNewData(userId: number, date: Date) {
+        const { rows } = await pool.query(
+            "SELECT * FROM lists WHERE $1 = ANY(owner_ids) AND updated_at > $2",
+            [userId, date]
+        );
+
+        return rows;
     }
 }

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { AppError } from '../errors/app.error';
+import { log } from 'node:console';
 
 export interface AuthRequest extends Request {
   userId?: number;

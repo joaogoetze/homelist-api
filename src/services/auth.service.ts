@@ -11,6 +11,8 @@ export class AuthService {
     async register(name: string, email: string, password: string) {
         const existingUser = await this.authRepository.getUserByEmail(email);
         
+        console.log("existing User", existingUser);
+
         if (existingUser) throw new AppError('Email já cadastrado', 400);
         
         const hashedPassword = await bcrypt.hash(password, 10); 
@@ -39,10 +41,11 @@ export class AuthService {
         
         const accessToken = generateAccessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
+        const userId = user.id;
 
         await this.authRepository.insertTokens(Number(user.id), refreshToken);
 
-        return { accessToken, refreshToken };
+        return { accessToken, refreshToken, userId };
     }
 
     async refresh(refreshToken: string) {

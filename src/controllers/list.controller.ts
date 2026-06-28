@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ListService } from '../services/list.service';
 import { AuthRequest } from '../middlewares/auth.middleware';
 import { AppError } from '../errors/app.error';
+import { log } from 'node:console';
 
 export class ListController {
     private listService = new ListService();
@@ -66,6 +67,26 @@ export class ListController {
 
         const list = await this.listService.updateListName(listId, name);
         res.status(200).json(list);
+    }
+
+    pushSyncLists = async (req: Request, res: Response) => {
+        const changes = req.body.unsynced
+
+        const changess = await this.listService.sync(changes);
+        res.status(200).json(changess);
+    }
+
+    pullSyncLists = async (req: Request, res: Response) => {
+        console.log("parametros", req.params);
+        const userId = Number(req.params.userId);
+        const date = req.params.date;
+        const datee =   new Date(date.toString());
+
+        const teste = await this.listService.getNewData(userId, datee);
+        console.log("AA", teste);
+        res.status(200).json(teste);
+        
+          
     }
 
 
