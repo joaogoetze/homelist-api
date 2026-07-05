@@ -1,16 +1,7 @@
 import 'dotenv/config'
 import { pool } from '../database';
 
-
 export class ListRepository {
-    async getListByOwnerId(userId: number) {
-        const { rows } = await pool.query(
-            "SELECT id, name FROM lists WHERE $1 = ANY(owner_ids) AND deleted_at IS NULL",
-            [userId]
-        );
-
-        return rows;
-    }
 
     async createList(ownerId: number, name: string) {
         const { rows } = await pool.query(
@@ -21,16 +12,7 @@ export class ListRepository {
         return rows[0];
     }
 
-    async addListUser(listId: number, userId: number) {
-        const { rows } = await pool.query(
-            "UPDATE lists SET owner_ids = array_append(owner_ids, $1) WHERE id = $2 RETURNING *",
-            [userId, listId]
-        );
-
-        return rows[0];
-    }
-
-    async updateListName(listId: number, name: string) {
+    async updateList(listId: number, name: string) {
         const { rows } = await pool.query(
             "UPDATE lists SET name = $1 WHERE id = $2 RETURNING *",
             [name, listId]
@@ -40,25 +22,15 @@ export class ListRepository {
     }
     
     async deleteList(listId: number) {
-        
         const { rows } = await pool.query(
             "UPDATE lists SET deleted_at = now() WHERE id = $1 and deleted_at is null RETURNING *",
             [listId]
         );
 
-        return rows[0];
+        return rows[0] ?? null;
     }
 
-    async getUserByEmail(email: string) {
-        const { rows } = await pool.query(
-            "SELECT id FROM users WHERE email = $1",
-            [email]
-        );
-
-        return rows[0];
-    }
-
-    async getNewData(userId: number, date: Date) {
+    async getListsByUpdatedDate(userId: number, date: Date) {
         const { rows } = await pool.query(
             "SELECT * FROM lists WHERE $1 = ANY(owner_ids) AND updated_at > $2",
             [userId, date]
@@ -66,4 +38,21 @@ export class ListRepository {
 
         return rows;
     }
+
+    // async getListByOwnerId(userId: number) {
+    //     const { rows } = await pool.query(
+    //         "SELECT id, name FROM lists WHERE $1 = ANY(owner_ids) AND deleted_at IS NULL",
+    //         [userId]
+    //     );
+    //     return rows;
+    // }
+
+    // async addListUser(listId: number, userId: number) {
+    //     const { rows } = await pool.query(
+    //         "UPDATE lists SET owner_ids = array_append(owner_ids, $1) WHERE id = $2 RETURNING *",
+    //         [userId, listId]
+    //     );
+
+    //     return rows[0];
+    // }
 }

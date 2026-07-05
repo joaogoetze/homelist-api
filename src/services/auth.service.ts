@@ -10,8 +10,6 @@ export class AuthService {
 
     async register(name: string, email: string, password: string) {
         const existingUser = await this.authRepository.getUserByEmail(email);
-        
-        console.log("existing User", existingUser);
 
         if (existingUser) throw new AppError('Email já cadastrado', 400);
         

@@ -11,4 +11,13 @@ export class UserRepository {
 
         return rows[0];
     }
+
+    async getUserByEmail(email: string) {
+        const { rows } = await pool.query(
+            "SELECT id FROM users WHERE email = $1",
+            [email]
+        );
+
+        return rows[0];
+    }
 }
