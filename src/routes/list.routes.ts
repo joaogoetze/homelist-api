@@ -16,6 +16,6 @@ listRoutes.put("/sync/push", authMiddleware, listController.syncPush);
 // listRoutes.get("/", authMiddleware, listController.getListsByOwnerId);
 // listRoutes.get("/:listId/items", authMiddleware, itemController.getItemsByListId);
 // listRoutes.post("/", authMiddleware, listController.createList);
-// listRoutes.post("/:listId/users", authMiddleware, listController.addListUser);
+ listRoutes.post("/:listId/users", authMiddleware, listController.addListUser);
 // listRoutes.put("/:listId/name", authMiddleware, listController.updateListName);
 // listRoutes.delete("/:listId", authMiddleware, listController.deleteList);

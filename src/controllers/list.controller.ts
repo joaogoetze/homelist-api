@@ -60,18 +60,20 @@ export class ListController {
     //     res.status(201).json(list);
     // }
 
-    // addListUser = async (req: Request, res: Response) => {
-    //     const listId = Number(req.params.listId);
-    //     const { email } = req.body;
-
-    //     if (!listId || Number.isNaN(listId) || !email) {
-    //         console.error('List id and email are required');
-    //         throw new AppError('ID da lista e email são obrigatórios', 400);
-    //     }
+    addListUser = async (req: Request, res: Response) => {
+        console.log("tamo aí");
         
-    //     const list = await this.listService.addListUser(listId, email);
-    //     return res.status(200).json(list);
-    // }
+        const listId = Number(req.params.listId);
+        const { email } = req.body;
+
+        if (!listId || Number.isNaN(listId) || !email) {
+            console.error('List id and email are required');
+            throw new AppError('ID da lista e email são obrigatórios', 400);
+        }
+        
+        const list = await this.listService.addListUser(listId, email);
+        return res.status(200).json(list);
+    }
 
     // updateListName = async (req: AuthRequest, res: Response) => {
     //     const userId = Number(req.userId);

@@ -12,36 +12,67 @@ export class ItemRepository {
         return rows;
     }
 
-    async createItem(listId: number, name: string) {
+    async createItem(listId: number, name: string, checked: boolean) {
         const { rows } = await pool.query(
-            "INSERT INTO items (list_id, name) VALUES ($1, $2) RETURNING *",
-            [listId, name]
+            "INSERT INTO items (list_id, name, checked) VALUES ($1, $2, $3) RETURNING *",
+            [listId, name, checked]
         );
 
         return rows[0];
     }
 
-    async updateItemCheck(itemId: number, checked: boolean) {
+            async getItemsByUpdatedDate(userId: number, date: Date) {
+                // console.log("Id do user", userId);
+                // console.log("data", date);
+                
+                
+            const { rows } = await pool.query(
+                `SELECT i.* 
+                FROM items i
+                join lists l on l.id = i.list_id 
+                WHERE $1 = ANY(l.owner_ids) AND i.updated_at > $2`,
+                [userId, date]
+            );
+            console.log("items para atualizar", rows);
+            
+            return rows;
+        }
+
+    // async updateItemCheck(itemId: number, checked: boolean) {
+    //     const { rows } = await pool.query(
+    //         "UPDATE items SET checked = $1 WHERE id = $2 RETURNING *",
+    //         [checked, itemId]
+    //     );
+
+    //     return rows[0];
+    // }
+
+    // async updateItemName(itemId: number, name: string) {
+    //     const { rows } = await pool.query(
+    //         "UPDATE items SET name = $1 WHERE id = $2 RETURNING *",
+    //         [name, itemId]
+    //     );
+
+    //     return rows[0];
+    // }
+
+    async updateItem(itemId: number, name: string, checked: boolean) {
+        console.log("itemid", itemId, "name", name, "checked", checked);
+        
         const { rows } = await pool.query(
-            "UPDATE items SET checked = $1 WHERE id = $2 RETURNING *",
-            [checked, itemId]
+            "UPDATE items SET name = $1, checked = $2, updated_at = now() WHERE id = $3 RETURNING *",
+            [name, checked, itemId]
         );
 
-        return rows[0];
-    }
-
-    async updateItemName(itemId: number, name: string) {
-        const { rows } = await pool.query(
-            "UPDATE items SET name = $1 WHERE id = $2 RETURNING *",
-            [name, itemId]
-        );
+        console.log('rows', rows);
+        
 
         return rows[0];
     }
 
     async deleteItem(itemId: number) {
         const { rows } = await pool.query(
-            "UPDATE items SET deleted_at = now() WHERE id = $1 RETURNING *",
+            "UPDATE items SET deleted_at = now(), updated_at = now() WHERE id = $1 RETURNING *",
             [itemId]
         );
 

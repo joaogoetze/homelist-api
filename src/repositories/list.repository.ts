@@ -14,7 +14,7 @@ export class ListRepository {
 
     async updateList(listId: number, name: string) {
         const { rows } = await pool.query(
-            "UPDATE lists SET name = $1 WHERE id = $2 RETURNING *",
+            "UPDATE lists SET name = $1, updated_at = NOW() WHERE id = $2 RETURNING *",
             [name, listId]
         );
         
@@ -31,28 +31,34 @@ export class ListRepository {
     }
 
     async getListsByUpdatedDate(userId: number, date: Date) {
-        const { rows } = await pool.query(
+        console.log('date', date);
+                const { rows } = await pool.query(
             "SELECT * FROM lists WHERE $1 = ANY(owner_ids) AND updated_at > $2",
             [userId, date]
         );
-
+        console.log("dados", rows);
+        
         return rows;
     }
 
-    // async getListByOwnerId(userId: number) {
-    //     const { rows } = await pool.query(
-    //         "SELECT id, name FROM lists WHERE $1 = ANY(owner_ids) AND deleted_at IS NULL",
-    //         [userId]
-    //     );
-    //     return rows;
-    // }
+    async getListByOwnerId(userId: number) {
+        const { rows } = await pool.query(
+            "SELECT id, name FROM lists WHERE $1 = ANY(owner_ids) AND deleted_at IS NULL",
+            [userId]
+        );
+        return rows;
+    }
 
-    // async addListUser(listId: number, userId: number) {
-    //     const { rows } = await pool.query(
-    //         "UPDATE lists SET owner_ids = array_append(owner_ids, $1) WHERE id = $2 RETURNING *",
-    //         [userId, listId]
-    //     );
+    async addListUser(listId: number, userId: number) {
+        console.log("ID da lista", listId);
+        console.log("ID do usuário", userId);
+        
+        
+        const { rows } = await pool.query(
+            "UPDATE lists SET owner_ids = array_append(owner_ids, $1) WHERE id = $2 RETURNING *",
+            [userId, listId]
+        );
 
-    //     return rows[0];
-    // }
+        return rows[0];
+    }
 }

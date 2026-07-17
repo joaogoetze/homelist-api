@@ -1,9 +1,11 @@
 import { AppError } from '../errors/app.error';
 import { ListRepository } from '../repositories/list.repository';
+import { UserRepository } from '../repositories/user.repository';
 import { LocalUpdates } from '../types/list.types';
 
 export class ListService {
     private listRepository = new ListRepository();
+    private userRepository = new UserRepository();
 
     async syncPull(userId: number, date: Date) {
         const changes = await this.listRepository.getListsByUpdatedDate(userId, date);
@@ -23,7 +25,7 @@ export class ListService {
                 if (list.server_id) {
                     res = await this.updateList(list.server_id, list.name);
                     res ??= list;
-                if (!res) res = list;
+                    if (!res) res = list;
                 } else {
                     res = await this.createList(list.owner_ids, list.name);
                 }
@@ -65,11 +67,11 @@ export class ListService {
     //     return lists;
     // }
 
-    // async addListUser(listId: number, email: string) {
-    //     const userId = await this.listRepository.getUserByEmail(email);
-    //     if (!userId) throw new AppError('Usuário não encontrado', 404);
-    //     const list = await this.listRepository.addListUser(listId, userId.id);
-    //     if (!list) throw new AppError('Erro ao adicionar usuário à lista', 500);    
-    //     return list;
-    // }
+    async addListUser(listId: number, email: string) {
+        const userId = await this.userRepository.getUserByEmail(email);
+        if (!userId) throw new AppError('Usuário não encontrado', 404);
+        const list = await this.listRepository.addListUser(listId, userId.id);
+        if (!list) throw new AppError('Erro ao adicionar usuário à lista', 500);    
+        return list;
+    }
 }

@@ -11,6 +11,7 @@ export function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
+  
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     console.error('authorization header missing');
