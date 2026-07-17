@@ -1,19 +1,20 @@
-import bcrypt from 'bcrypt';
 import 'dotenv/config';
-import { AuthRepository } from '../repositories/auth.repository';
-import { generateAccessToken, generateRefreshToken } from '../utils/tokens';
+import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { AuthRepository } from '../repositories/auth.repository';
 import { AppError } from '../errors/app.error';
 
+const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!;
+const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 export class AuthService {
-    private authRepository = new AuthRepository();
+    constructor(private authRepository: AuthRepository) {}
 
     async register(name: string, email: string, password: string) {
         const existingUser = await this.authRepository.getUserByEmail(email);
 
         if (existingUser) throw new AppError('Email já cadastrado', 400);
         
-        const hashedPassword = await bcrypt.hash(password, 10); 
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await this.authRepository.register(name, email, hashedPassword);
         const userId = user.id;
 
@@ -53,11 +54,27 @@ export class AuthService {
 
         const payload = jwt.verify(
             refreshToken,
-            process.env.JWT_REFRESH_SECRET!
+            REFRESH_SECRET
         ) as JwtPayload;
 
         const accessToken = generateAccessToken(payload.userId);
 
         return accessToken;
-    }
+    }    
 }
+
+    function generateAccessToken(userId: number) {
+        return jwt.sign(
+            { userId },
+            ACCESS_SECRET,
+            { expiresIn: "7d" }
+        );
+    }
+
+    function generateRefreshToken(userId: number) {
+        return jwt.sign(
+            { userId },
+            REFRESH_SECRET,
+            { expiresIn: "30d" }
+        );
+    }

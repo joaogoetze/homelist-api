@@ -4,16 +4,15 @@ import { UserRepository } from '../repositories/user.repository';
 import { LocalUpdates } from '../types/list.types';
 
 export class ListService {
-    private listRepository = new ListRepository();
-    private userRepository = new UserRepository();
+    constructor(private listRepository: ListRepository, private userRepository: UserRepository) {}
 
     async syncPull(userId: number, date: Date) {
         const changes = await this.listRepository.getListsByUpdatedDate(userId, date);
+        
         return changes;
     }
 
-    async syncPush(localUpdates: LocalUpdates) {
-        
+    async syncPush(localUpdates: LocalUpdates) { 
         const finished = [];
         
         for (const list of localUpdates) {
@@ -48,30 +47,28 @@ export class ListService {
     async createList(ownerId: number, name: string) {
         const list = await this.listRepository.createList(ownerId, name);
         if (!list) throw new AppError('Erro ao criar lista', 500);
+        
         return list;
     }
 
     async updateList(listId: number, name: string) {
         const updatedList = await this.listRepository.updateList(listId, name);
         if (!updatedList) throw new AppError('Erro ao atualizar lista', 500);
+        
         return updatedList;
     }
 
     async deleteList(listId: number) {
         return await this.listRepository.deleteList(listId);        
     }
-    
-    // async getListByOwnerId(userId: number) {
-    //     const lists = await this.listRepository.getListByOwnerId(userId);
-    //     if (!lists) throw new AppError('Listas não encontradas', 404);
-    //     return lists;
-    // }
 
     async addListUser(listId: number, email: string) {
         const userId = await this.userRepository.getUserByEmail(email);
         if (!userId) throw new AppError('Usuário não encontrado', 404);
+        
         const list = await this.listRepository.addListUser(listId, userId.id);
         if (!list) throw new AppError('Erro ao adicionar usuário à lista', 500);    
+        
         return list;
     }
 }

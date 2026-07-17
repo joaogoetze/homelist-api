@@ -3,7 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { AppError } from '../errors/app.error';
 
 export class AuthController {
-    private authService = new AuthService();
+    constructor(private authService: AuthService) {}
 
     register = async(req: Request, res: Response) => {
         const { name, email, password } = req.body;
@@ -14,6 +14,7 @@ export class AuthController {
         }
 
         const { accessToken, refreshToken } = await this.authService.register(name, email, password);
+        
         return res.status(201).json({ accessToken, refreshToken });
     }
 
@@ -26,6 +27,7 @@ export class AuthController {
         }
 
         const { accessToken, refreshToken, userId } = await this.authService.login(email, password);
+        
         return res.status(200).json({ accessToken, refreshToken, userId });
     }
 
@@ -38,6 +40,7 @@ export class AuthController {
         }
 
         const accessToken = await this.authService.refresh(refreshToken);
+        
         return res.status(200).json({ accessToken });
     }
 }
