@@ -21,7 +21,7 @@ export class ListController {
     }
 
     syncPush = async (req: Request, res: Response) => {
-        const localUpdates = req.body?.unsynced;
+        const localUpdates = req.body?.unsyncedLists;
         
         if (!localUpdates || !localUpdates.length) {
             console.error('Changes not provided');
