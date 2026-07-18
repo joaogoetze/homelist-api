@@ -6,8 +6,6 @@ export class ItemService {
 
     async syncPull(userId: number, date: Date) {
         const changes = await this.itemRepository.getItemsByUpdatedDate(userId, date);
-        console.log("data", date);
-        console.log("mudanças nos items", changes);
         
         return changes;
     }
