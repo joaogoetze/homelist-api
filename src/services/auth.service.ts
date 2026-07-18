@@ -29,7 +29,10 @@ export class AuthService {
     async login(email: string, password: string) {
         const user = await this.authRepository.getUserByEmail(email);
 
-        if (!user) throw new AppError('Credenciais inválidas', 401);
+        if (!user) {
+            console.log("usuário não existe");
+            throw new AppError('Credenciais inválidas', 401);
+        }
 
         const validPassword = await bcrypt.compare(
             password,
