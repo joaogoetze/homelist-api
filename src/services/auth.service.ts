@@ -23,15 +23,14 @@ export class AuthService {
 
         await this.authRepository.insertTokens(Number(userId), refreshToken);
 
-        return { accessToken, refreshToken };
+        return { accessToken, refreshToken, userId };
     }
 
     async login(email: string, password: string) {
-        console.info("login", email, password);
+
         const user = await this.authRepository.getUserByEmail(email);
 
         if (!user) {
-            console.log("usuário não existe");
             throw new AppError('Credenciais inválidas', 401);
         }
 
