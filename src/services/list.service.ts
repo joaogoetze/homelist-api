@@ -8,6 +8,8 @@ export class ListService {
 
     async syncPull(userId: number, date: Date) {
         const changes = await this.listRepository.getListsByUpdatedDate(userId, date);
+        console.log("data", date);
+        console.log("mudanças nas listas", changes);
         
         return changes;
     }
