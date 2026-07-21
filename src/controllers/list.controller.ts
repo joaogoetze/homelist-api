@@ -33,8 +33,9 @@ export class ListController {
         return res.status(200).json(confirmedChanges);
     }
 
-    addListUser = async (req: Request, res: Response) => {
+    addListUser = async (req: AuthRequest, res: Response) => {
         const listId = Number(req.params.listId);
+        const userId = Number(req.userId);
         const { email } = req.body;
 
         if (!listId || Number.isNaN(listId) || !email) {
@@ -42,7 +43,7 @@ export class ListController {
             throw new AppError('ID da lista e email são obrigatórios', 400);
         }
         
-        const list = await this.listService.addListUser(listId, email);
+        const list = await this.listService.addListUser(listId, email, userId);
         
         return res.status(201).json(list);
     }

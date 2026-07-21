@@ -26,9 +26,9 @@ export class AuthController {
             throw new AppError('Email e senha são obrigatórios', 400);
         }
 
-        const { accessToken, refreshToken, userId } = await this.authService.login(email, password);
+        const { accessToken, refreshToken, loggedUser } = await this.authService.login(email, password);
         
-        return res.status(200).json({ accessToken, refreshToken, userId });
+        return res.status(200).json({ accessToken, refreshToken, loggedUser });
     }
 
     refresh = async(req: Request, res: Response) => {

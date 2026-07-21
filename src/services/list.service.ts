@@ -62,11 +62,13 @@ export class ListService {
         return await this.listRepository.deleteList(listId);        
     }
 
-    async addListUser(listId: number, email: string) {
-        const userId = await this.userRepository.getUserByEmail(email);
-        if (!userId) throw new AppError('Usuário não encontrado', 404);
+    async addListUser(listId: number, email: string, userId: number) {
+        const user = await this.userRepository.getUserByEmail(email);
+        if (!user) throw new AppError('Usuário não encontrado', 404);
+
+        if (user.id == userId) throw new AppError('Não é possível compartilhar com você mesmo', 500);
         
-        const list = await this.listRepository.addListUser(listId, userId.id);
+        const list = await this.listRepository.addListUser(listId, user.id);
         if (!list) throw new AppError('Erro ao adicionar usuário à lista', 500);    
         
         return list;

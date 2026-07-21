@@ -43,11 +43,15 @@ export class AuthService {
         
         const accessToken = generateAccessToken(user.id);
         const refreshToken = generateRefreshToken(user.id);
-        const userId = user.id;
+        const loggedUser = {
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }
 
         await this.authRepository.insertTokens(Number(user.id), refreshToken);
 
-        return { accessToken, refreshToken, userId };
+        return { accessToken, refreshToken, loggedUser };
     }
 
     async refresh(refreshToken: string) {
